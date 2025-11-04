@@ -1,0 +1,17 @@
+# systemConfig.yaml
+
+plc_MUSOL:
+  ams_net_id: "5.110.208.2.1.1"   # PLC AMS Net ID of the polarimeter 192.168.1.100.1.1
+  logs_enabled: true              # Set to true or false
+  logs_path: "/home/hmoreno/logs" # Logs directory absolute path. It must exixt if logs_enabled is true
+
+spectrograph_SONG:
+  host: "127.0.0.1"      # The IP address of the SONG server (default: "127.0.0.1")
+  port: 8050             # The port number of the SONG server (default: 8050)
+  timeout: 30            # Timeout in seconds
+
+MUSOLSONG_system:
+  logs_enabled: true           # Set to true or false
+  logs_path: "/home/hmoreno/logs"  # Logs directory absolute path. It must exixt if logs_enabled is true
+  logs_level: "INFO"          # Log level
+  logs_console_enabled: true   # Set to true or false to enable console logs
