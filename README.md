@@ -65,6 +65,11 @@ Run without any arguments to start the graphical interface
   
   musolsong-controller --sequence-yaml config.yaml -n "Test" -p 456 --validate-only
 ```
+  **YAML Editor**
+```bash
+  
+  musolsong-yamleditor
+```
 ---
 
 ## 📁 Project Structure
