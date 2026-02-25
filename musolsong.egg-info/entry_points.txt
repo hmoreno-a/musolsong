@@ -1,0 +1,4 @@
+[console_scripts]
+musolsong-controller = musolsong.controller.main:main
+musolsong-songsimulator = musolsong.controller.song_server_simulator.main:main
+musolsong-yamleditor = musolsong.yamleditor.main:main

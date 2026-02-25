@@ -50,6 +50,15 @@ class MusolLibSimulator:
             bool: True if connected, False otherwise
         """
         return self.connected
+    
+    def enable_axes(self) -> int:
+        """Enable the axes on the PLC."""
+        return self.SUCCESS
+    
+    def disable_axes(self) -> int:
+        """Disable the axes on the PLC."""
+        return self.SUCCESS
+    
     def _log_message(self, message: str) -> None:
         
         """
@@ -177,7 +186,7 @@ class MusolLibSimulator:
             return self.COMM_TIMEOUT
         
         # Simulate PLC failure
-        if self._simulate_random_failure(0.03):
+        if self._simulate_random_failure(0.0):
             self._log_message("PLC failure while setting mode")
             return self.PLC_FAILURE
         
@@ -230,7 +239,7 @@ class MusolLibSimulator:
             return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.COMM_TIMEOUT
         
         # Simulate PLC failure
-        if self._simulate_random_failure(0.03):
+        if self._simulate_random_failure(0.0):
             self._log_message("PLC failure during modulation")
             return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.PLC_FAILURE
         

@@ -822,6 +822,7 @@ class MusolSongApp(QMainWindow, MusolLib, SONGClient, SystemLogger):
     def configurePLC(self):
         """
         Configures the PLC with the values entered in the input fields. 
+        On 26-02-2026 we send enable_axes and disable_axes to the PLC
         """
         if not self.musol.is_connected():
             self._log_error("Not connected to MUSOL PLC", "Engineering mode:configurePLC()")
@@ -830,6 +831,16 @@ class MusolSongApp(QMainWindow, MusolLib, SONGClient, SystemLogger):
             self.status_bar.repaint()
             return
         
+        # send enable_axix before moving
+        retval = self.musol.enable_axes()
+        if retval != 0: 
+            self._log_critical("Returned error from PLC", "Engineering mode:configurePLC()",
+                             f"ERROR value: {retval} - ERROR description: {self.musol.get_error_description(retval)}")
+            self.status_bar.clearMessage()
+            self.status_bar.showMessage("ERROR: Sending enable_axes commad to PLC", 3000)
+            self.status_bar.setStyleSheet("background-color: rgb(255, 255, 0);")
+            self.status_bar.repaint()    
+            return
         
         # Retrieve the current value of the alpha, beta input fields
         alpha_deg, beta_deg, calibration_theta_deg = self.get_modulation_values()
@@ -886,6 +897,16 @@ class MusolSongApp(QMainWindow, MusolLib, SONGClient, SystemLogger):
             return
         
         
+        # send disable_axes after moving
+        retval = self.musol.disable_axes()
+        if retval != 0: 
+            self._log_critical("Returned error from PLC", "Engineering mode:configurePLC()",
+                             f"ERROR value: {retval} - ERROR description: {self.musol.get_error_description(retval)}")
+            self.status_bar.clearMessage()
+            self.status_bar.showMessage("ERROR: Sending disable_axes commad to PLC", 3000)
+            self.status_bar.setStyleSheet("background-color: rgb(255, 255, 0);")
+            self.status_bar.repaint()    
+            return      
         
         self._log_debug("Return from set_modulation cmd", "Eng. mode:configurePLC()",
                      f"alpha:{alpha_pos:.3f}, beta:{beta_pos:.3f}, theta:{theta_pos:.3f}, linear_translator:{linear_translator_pos:.3f}, error_var:{error_var}") 
@@ -1153,7 +1174,9 @@ class MusolSongApp(QMainWindow, MusolLib, SONGClient, SystemLogger):
         This method is called when the start button is pressed. It will check if
         the SONG and MUSOL PLC are connected, and if the sequence configuration
         is loaded. If all conditions are met, it will start the processing of the
-        modulation data.
+        modulation data. This includes sending the activation of motor axex to MUSOL PLC,
+        sending the modulation data to MUSOL PLC and sending the acquisition comand to  SONG.
+        
 
         :return: None
         """  

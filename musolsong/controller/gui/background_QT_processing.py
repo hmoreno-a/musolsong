@@ -51,6 +51,9 @@ class ProcessingWorker(QObject):
         be processed once. If the mode is CALIBRATION, the modulations will be
         processed in a loop, with the theta angle increasing by the offset angle
         each cycle.
+        25-02-2026 At the begining of the process, the enable_axes command will be sent to the PLC 
+        to enable the axes. At the end of the process, the disable_axes command will be sent to the
+        PLC to enable the axes"
 
         :return: None
         """
@@ -72,6 +75,18 @@ class ProcessingWorker(QObject):
         current_theta = 0.0
         current_cycle = 0
         
+        # enable axes at begining of sequence
+        retval = self.musol.enable_axes()
+        if retval != 0:
+            # Error sending enable_axes command
+            self.logger.log_critical("ERROR sending enable_axes cmd to PLC", "ProcessingWorker.process_modulation_data()",
+                    f"ERROR value: {retval} - ERROR description: {self.musol.get_error_description(retval)}")
+            text_msg =  f"PLC Enable axes failed!- ERROR value: {retval} - {self.musol.get_error_description(retval)}"
+            self.status_updated.emit(text_msg)
+            #Notify main thread that processing is finished  due to error and return
+            self.processing_finished.emit(False)
+            return  
+            
         #set mode
         retval = self.musol.set_mode(mode_uppercase)
         if retval == 0:
@@ -112,6 +127,20 @@ class ProcessingWorker(QObject):
             #Notify main thread that processing is finished  due to error and return
             self.processing_finished.emit(False)
             return
+        
+        #disable axex at end of sequence
+        retval = self.musol.disable_axes()
+        if retval != 0:
+            # Error sending disable_axes command
+            self.logger.log_critical("ERROR sending disable_axes cmd to PLC", "ProcessingWorker.process_modulation_data()",
+                    f"ERROR value: {retval} - ERROR description: {self.musol.get_error_description(retval)}")
+            text_msg =  f"PLC Disable axes failed!- ERROR value: {retval} - {self.musol.get_error_description(retval)}"
+            self.status_updated.emit(text_msg)
+            #Notify main thread that processing is finished  due to error and return
+            self.processing_finished.emit(False)
+            return  
+        
+        
                
          # Processing completed successfully
         self.status_updated.emit("Processing completed successfully!")

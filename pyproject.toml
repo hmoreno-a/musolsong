@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "musolsong"
-version = "2025.0.1.0"
+version = "2026.0.1.0"
 description = "MUSOLSONG Controller and YAML Editor tools applications"
 authors = [{name = "hmoreno", email = "hmoreno@iac.es"}]
 readme = "README.md"
