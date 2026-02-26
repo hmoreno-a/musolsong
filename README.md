@@ -57,6 +57,7 @@ To run in simulation mode where both the musolLib and the SONG server are simula
         musolsong-songsimulator
 ```
     Once the simulator is up and running, start the controller by typing:
+    
 ```bash
         USE_MUSOLLIB_SIMULATOR=1 musolsong-controller
 ```
