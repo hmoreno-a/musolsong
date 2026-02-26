@@ -9,7 +9,7 @@ description = "MUSOLSONG Controller and YAML Editor tools applications"
 authors = [{name = "hmoreno", email = "hmoreno@iac.es"}]
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.8"
+requires-python = ">=3.10.12"
 dependencies = [
     "pyyaml>=5.4.1",
     "PyQt6>=6.9.1",
