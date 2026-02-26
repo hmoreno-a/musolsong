@@ -14,10 +14,18 @@ class MusolLibSimulator:
     SUCCESS = 0
     ERR_CONNECTION_FAILED = 1
     ERR_DIR_NOT_FOUND = 2
-    COMM_TIMEOUT = 3
-    PLC_FAILURE = 4
-    INVALID_MODE = 5
-    INVALID_ANGLE = 6
+    ERR_INVALID_LENGTH = 3
+    ERR_INVALID_MODE = 4
+    ERR_INVALID_ANGLE = 5
+    ERR_INVALID_POSITION = 6
+    ERR_PLC_COMM_FAILURE = 7
+    ERR_PLC_FAILURE = 8
+    ERR_TIMEOUT = 9
+    ERR_UNEXPECTED_CONDITION = 10
+    ERR_EMERGENCY_STOP_ACTIVE = 11
+    ERR_AXIS_NOT_READY = 12
+    ERR_AXIS_NOT_CALIBRATED = 13
+    
     
     # Valid modes
     VALID_MODES = ["CALIBRATION", "OBSERVATION"]
@@ -127,10 +135,10 @@ class MusolLibSimulator:
         Homing procedure (all axes).
         
         Returns:
-            SUCCESS/COMM_TIMEOUT/PLC_FAILURE
+            SUCCESS/ERR_TIMEOUT/ERR_PLC_FAILURE
         """
         if not self.connected:
-            return self.PLC_FAILURE
+            return self.ERR_PLC_FAILURE
         
         self._log_message("Starting homing procedure")
         
@@ -140,12 +148,12 @@ class MusolLibSimulator:
         # Simulate communication timeout
         if self._simulate_random_failure(0.05):
             self._log_message("Communication timeout during homing")
-            return self.COMM_TIMEOUT
+            return self.ERR_TIMEOUT
         
         # Simulate PLC failure
         if self._simulate_random_failure(0.03):
             self._log_message("PLC failure during homing")
-            return self.PLC_FAILURE
+            return self.ERR_PLC_FAILURE
         
         # Successful homing - reset positions to home
         self.l511_position = 0.0
@@ -166,29 +174,29 @@ class MusolLibSimulator:
             mode: Operational mode (CALIBRATION/OBSERVATION)
             
         Returns:
-            SUCCESS/COMM_TIMEOUT/INVALID_MODE/PLC_FAILURE
+            SUCCESS/ERR_TIMEOUT/ERR_INVALID_MODE/ERR_PLC_FAILURE
         """
         if not self.connected:
-            return self.PLC_FAILURE
+            return self.ERR_PLC_FAILURE
         
         if not self.is_initialized:
-            return self.PLC_FAILURE
+            return self.ERR_PLC_FAILURE
         
         if mode not in self.VALID_MODES:
             self._log_message(f"Invalid mode: {mode}")
-            return self.INVALID_MODE
+            return self.ERR_INVALID_MODE
         
         self._simulate_communication_delay()
         
         # Simulate communication timeout
         if self._simulate_random_failure(0.05):
             self._log_message("Communication timeout while setting mode")
-            return self.COMM_TIMEOUT
+            return self.ERR_TIMEOUT
         
         # Simulate PLC failure
         if self._simulate_random_failure(0.0):
             self._log_message("PLC failure while setting mode")
-            return self.PLC_FAILURE
+            return self.ERR_PLC_FAILURE
         
         self.current_mode = mode
         self._log_message(f"Mode set to: {mode}")
@@ -211,24 +219,24 @@ class MusolLibSimulator:
 
         #print("set_modulation in musol_simulator:", alpha_angle, beta_angle, calibration_theta_angle)
         if not self.connected or not self.is_initialized:
-            return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.PLC_FAILURE
+            return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.ERR_PLC_FAILURE
         
         if self.emergency_stop_active:
-            return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.PLC_FAILURE
+            return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.ERR_PLC_FAILURE
         
         # Validate angles
         if not (self.alpha_min <= alpha_angle <= self.alpha_max):
             self._log_message(f"Invalid alpha angle: {alpha_angle}")
-            return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.INVALID_ANGLE
+            return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.ERR_INVALID_ANGLE
         
         if not (self.beta_min <= beta_angle <= self.beta_max):
             self._log_message(f"Invalid beta angle: {beta_angle}")
-            return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.INVALID_ANGLE
+            return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.ERR_INVALID_ANGLE
         
         if calibration_theta_angle is not None:
             if not (self.theta_min <= calibration_theta_angle <= self.theta_max):
                 self._log_message(f"Invalid theta angle: {calibration_theta_angle}")
-                return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.INVALID_ANGLE
+                return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.ERR_INVALID_ANGLE
         
         # Simulate movement time
         time.sleep(random.uniform(0.2, 0.8))
@@ -236,12 +244,12 @@ class MusolLibSimulator:
         # Simulate communication timeout
         if self._simulate_random_failure(0.05):
             self._log_message("Communication timeout during modulation")
-            return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.COMM_TIMEOUT
+            return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.ERR_TIMEOUT
         
         # Simulate PLC failure
         if self._simulate_random_failure(0.0):
             self._log_message("PLC failure during modulation")
-            return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.PLC_FAILURE
+            return self.l511_position, self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.ERR_PLC_FAILURE
         
         # Update positions based on angles (simplified simulation)
         self.l511_position = alpha_angle * 0.5 + beta_angle * 0.3
@@ -264,19 +272,19 @@ class MusolLibSimulator:
             Tuple of (mode, DT80-01, DT80-02, DT80-03, L-511, error_code)
         """
         if not self.connected:
-            return "UNKNOWN", 0.0, 0.0, 0.0, 0.0, self.PLC_FAILURE
+            return "UNKNOWN", 0.0, 0.0, 0.0, 0.0, self.ERR_PLC_FAILURE
         
         self._simulate_communication_delay()
         
         # Simulate communication timeout
         if self._simulate_random_failure(0.05):
             self._log_message("Communication timeout while getting status")
-            return self.current_mode or "UNKNOWN", self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.l511_position, self.COMM_TIMEOUT
+            return self.current_mode or "UNKNOWN", self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.l511_position, self.ERR_TIMEOUT
         
         # Simulate PLC failure
         if self._simulate_random_failure(0.03):
             self._log_message("PLC failure while getting status")
-            return self.current_mode or "UNKNOWN", self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.l511_position, self.PLC_FAILURE
+            return self.current_mode or "UNKNOWN", self.dt80_01_position, self.dt80_02_position, self.dt80_03_position, self.l511_position, self.ERR_PLC_FAILURE
         
         # Add small random variations to positions (simulate sensor noise)
         l511_current = self.l511_position + random.uniform(-0.01, 0.01)
@@ -309,13 +317,20 @@ class MusolLibSimulator:
             self.SUCCESS: "Operation successful",
             self.ERR_CONNECTION_FAILED: "Connection to PLC failed",
             self.ERR_DIR_NOT_FOUND: "Log directory not found",
-            self.COMM_TIMEOUT: "Communication timeout",
-            self.PLC_FAILURE: "PLC failure or not connected",
-            self.INVALID_MODE: "Invalid operational mode",
-            self.INVALID_ANGLE: "Invalid angle parameter"
+            self.ERR_INVALID_LENGTH: "Invalid length parameter",
+            self.ERR_INVALID_MODE: "Invalid operational mode",
+            self.ERR_INVALID_ANGLE: "Invalid angle parameter",
+            self.ERR_INVALID_POSITION: "Invalid position parameter",
+            self.ERR_PLC_COMM_FAILURE: "PLC communication failure",
+            self.ERR_PLC_FAILURE: "PLC failure or not connected",
+            self.ERR_TIMEOUT: "Communication timeout",
+            self.ERR_UNEXPECTED_CONDITION: "Unexpected condition",
+            self.ERR_EMERGENCY_STOP_ACTIVE: "Emergency stop active",
+            self.ERR_AXIS_NOT_READY: "Axis not ready",
+            self.ERR_AXIS_NOT_CALIBRATED: "Axis not calibrated"
         }
         return error_descriptions.get(error_code, "Unknown error")
-
+        
 
 # Example usage
 if __name__ == "__main__":

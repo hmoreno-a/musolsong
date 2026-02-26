@@ -76,6 +76,7 @@ class ProcessingWorker(QObject):
         current_cycle = 0
         
         # enable axes at begining of sequence
+        self.logger.log_info("Sending enable_axex cmd to PLC ", "ProcessingWorker.process_modulation_data()")    
         retval = self.musol.enable_axes()
         if retval != 0:
             # Error sending enable_axes command
@@ -129,6 +130,7 @@ class ProcessingWorker(QObject):
             return
         
         #disable axex at end of sequence
+        self.logger.log_info("Sending disable_axex cmd to PLC ", "ProcessingWorker.process_modulation_data()")
         retval = self.musol.disable_axes()
         if retval != 0:
             # Error sending disable_axes command

@@ -832,6 +832,7 @@ class MusolSongApp(QMainWindow, MusolLib, SONGClient, SystemLogger):
             return
         
         # send enable_axix before moving
+        self._log_info("Sending enable_axex cmd to PLC ", "Engineering mode:configurePLC()")
         retval = self.musol.enable_axes()
         if retval != 0: 
             self._log_critical("Returned error from PLC", "Engineering mode:configurePLC()",
@@ -898,6 +899,7 @@ class MusolSongApp(QMainWindow, MusolLib, SONGClient, SystemLogger):
         
         
         # send disable_axes after moving
+        self._log_info("Sending disable_axex cmd to PLC ", "Engineering mode:configurePLC()")
         retval = self.musol.disable_axes()
         if retval != 0: 
             self._log_critical("Returned error from PLC", "Engineering mode:configurePLC()",

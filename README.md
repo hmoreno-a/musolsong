@@ -49,6 +49,18 @@ musolsong-controller [--sequence-yaml SEQUENCE_YAML] [--project-name PROJECT_NAM
 
 Run without any arguments to start the graphical interface
 
+**Running in simulation mode**
+
+To run in simulation mode where both the musolLib and the SONG server are simulated:
+    First launch the SONG simulator software in a separated terminal:
+```bash
+        musolsong-songsimulator
+```
+    Once the simulator is up and running, start the controller by typing:
+```bash
+        USE_MUSOLLIB_SIMULATOR=1 musolsong-controller
+```
+
 ---
 ## Examples
 
