@@ -56,7 +56,7 @@ To run in simulation mode where both the musolLib and the SONG server are simula
 ```bash
         musolsong-songsimulator
 ```
-    Once the simulator is up and running, start the controller by typing:
+Once the simulator is up and running, start the controller by typing:
     
 ```bash
         USE_MUSOLLIB_SIMULATOR=1 musolsong-controller
@@ -89,9 +89,12 @@ To run in simulation mode where both the musolLib and the SONG server are simula
 
 ```text
 MUSOLSONG
-├── musolsong               # Root directory
-│   ├── controller          # GUI app for coordinating operations between MUSOL and SONG
-│   └── yamleditor          # GUI app for creating/editing MUSOLSONG YAML configuration files designed for use with the MUSOLSONG Controller
-├── pyproject.toml          # Info to create, install, and publish packages
-└── README.md
+├── docs              # Contain the MUSOLSONG project documentation
+├── musolsong         # Root directory for src
+│   ├── controller    # GUI app for coordinating operations between MUSOL and SONG
+│   └── yamleditor    # GUI app to create/edit MUSOLSONG YAML configuration files designed for use with MUSOLSONG Controller
+├── pyproject.toml    # Info to create, install, and publish packages
+├── README.md
+└── tools             # Suplementary project scripts
+
 
