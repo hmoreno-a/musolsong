@@ -76,7 +76,9 @@ class ProcessingWorker(QObject):
         current_cycle = 0
         
         # enable axes at begining of sequence
-        self.logger.log_info("Sending enable_axex cmd to PLC ", "ProcessingWorker.process_modulation_data()")    
+        self.logger.log_info("Sending enable_axes cmd to PLC ", "ProcessingWorker.process_modulation_data()")
+        self.status_updated.emit(f"Sending enable_axes commnad to MUSOL PLC...")
+    
         retval = self.musol.enable_axes()
         if retval != 0:
             # Error sending enable_axes command
@@ -117,7 +119,21 @@ class ProcessingWorker(QObject):
                         self.processing_finished.emit(False)
                         return
                         
-                    current_theta += offset_angle                    
+                    current_theta += offset_angle
+                    
+                #After the last cycle, send the disable_axes command 
+                #disable axex at end of sequence
+                self.logger.log_info("Sending disable_axes cmd to PLC ", "ProcessingWorker.process_modulation_data()")
+                retval = self.musol.disable_axes()
+                if retval != 0:
+                    # Error sending disable_axes command
+                    self.logger.log_critical("ERROR sending disable_axes cmd to PLC", "ProcessingWorker.process_modulation_data()",
+                        f"ERROR value: {retval} - ERROR description: {self.musol.get_error_description(retval)}")
+                    text_msg =  f"PLC Disable axes failed!- ERROR value: {retval} - {self.musol.get_error_description(retval)}"
+                    self.status_updated.emit(text_msg)
+                    #Notify main thread that processing is finished  due to error and return
+                    self.processing_finished.emit(False)
+                    return                     
         else:
             # Error sending set_mode command
             self.logger.log_critical("ERROR sending set_mode cmd to PLC", "ProcessingWorker.process_modulation_data()",
@@ -129,8 +145,10 @@ class ProcessingWorker(QObject):
             self.processing_finished.emit(False)
             return
         
-        #disable axex at end of sequence
-        self.logger.log_info("Sending disable_axex cmd to PLC ", "ProcessingWorker.process_modulation_data()")
+
+        #disable axes at end of sequence
+        self.logger.log_info("Sending disable_axes cmd to PLC ", "ProcessingWorker.process_modulation_data()")
+        self.status_updated.emit(f"Sending disable_axes commnad to MUSOL PLC...")
         retval = self.musol.disable_axes()
         if retval != 0:
             # Error sending disable_axes command
@@ -140,10 +158,7 @@ class ProcessingWorker(QObject):
             self.status_updated.emit(text_msg)
             #Notify main thread that processing is finished  due to error and return
             self.processing_finished.emit(False)
-            return  
-        
-        
-               
+            return         
          # Processing completed successfully
         self.status_updated.emit("Processing completed successfully!")
         self.processing_finished.emit(True)                        
