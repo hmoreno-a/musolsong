@@ -87,8 +87,8 @@ class MusolSongApp(QMainWindow, MusolLib, SONGClient, SystemLogger):
         control buttons, and status bar.
         """
         self.setWindowTitle("MUSOLSONG Coordinator Software")
-        self.setGeometry(100, 100, 680, 700)
-        self.setMinimumSize(650, 600)
+        self.setGeometry(100, 100, 680, 750)
+        self.setMinimumSize(650, 700)
 
         # Create menu bar for app to load YAML file and exit.
         self.create_menu_bar()
@@ -287,7 +287,7 @@ class MusolSongApp(QMainWindow, MusolLib, SONGClient, SystemLogger):
               
         # Modulations Table
         self.modulations_table = QTableWidget()
-        self.modulations_table.setColumnCount(4)
+        self.modulations_table.setColumnCount(6)
         self.modulations_table.setHorizontalHeaderLabels(["Alpha \n(deg)", "Beta \n(deg)","SONG Integration\n(sec)", "    Description"])
         self.modulations_table.setColumnWidth(0, 100)
         self.modulations_table.setColumnWidth(1, 100)
