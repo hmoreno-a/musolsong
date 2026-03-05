@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "musolsong"
-version = "2026.0.1.0"
+version = "2026.0.1.2"
 description = "MUSOLSONG Controller and YAML Editor tools applications"
-authors = [{name = "hmoreno", email = "hmoreno@iac.es"}]
+authors = [{name = "Heidy Moreno A.", email = "hmoreno@iac.es"}]
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10.12"
@@ -16,17 +16,19 @@ dependencies = [
     "musol"    
 ]
 classifiers = [
-  "Development Status :: 4 - Beta",
+  "Development Status :: 6 - Mature",
   "Programming Language :: Python"
 ]
 [project.scripts]
 musolsong-controller = "musolsong.controller.main:main"
 musolsong-yamleditor = "musolsong.yamleditor.main:main"
 musolsong-songsimulator = "musolsong.controller.song_server_simulator.main:main"
+searchInLogs = "tools.searchLogs:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["musolsong*"]
+include = ["musolsong*", "tools*"]
+exclude = ["docs"]
 
 [tool.setuptools.package-data]
 "musolsong.controller" = ["etc/*.yaml"]
