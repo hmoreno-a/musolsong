@@ -1,11 +1,10 @@
-# MUSOLSONG Project documentation
+# MUSOLSONG Project tools
   
-- **DS-TN-MUS_0008v1.4.pdf**   ----     MUSOL CONTROL INTERFACE LIBRARY SPECIFICATION
-- **DS-TN-MUS_0009v2.0.pdf**   ----     SONG SERVER CONTROL INTERFACE SPECIFICATIONS
-- **DS-TN-MUS_0010v1.0.pdf**   ----     DESIGN SPECIFICATIONS FOR THE MUSOLSONG SOFTWARE SYSTEM
-- **DS-TN-MUS_0011v1.1.pdf**   ----     MUSOLSONG Coordinator Software System - Introductory Guide for Developers
-- **DS-TN-MUS_0012v1.0.pdf**   ----     MUSOLSONG Coordinator Software System - User manual
-- **DS-TN-MUS_0013v1.0.pdf**   ----     MUSOLSONG YAMLEditor Software System - User Manual
+- **add_route_to_plc_and_check_connection_in_linux.py**      ----  Script to check connections to musol PLC when running on Linux
+
+- **check_PLC_connect_increasing_ads_timeout_in_linux.py**   ----  Script to increase the ADS timeout when running on Linux
+
+- **searchLogs.py**   ---- Script to search for a pattern in a log file showing context lines (equivalent to grep -C).
 
 ---
 
