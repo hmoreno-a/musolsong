@@ -27,7 +27,7 @@ class ModulationTableWidget(QTableWidget):
         This method initializes the table with four columns: 'Alpha', 'Beta', 
         'Integration Time', and 'Description'. It also configures the header 
         sections, setting the resize mode for each column and specifying fixed 
-        widths for the first three columns. An initial 2 empty rows are added to 
+        widths for the first three columns. An initial 6 empty rows are added to 
         the table.
         """
 
@@ -46,8 +46,14 @@ class ModulationTableWidget(QTableWidget):
         self.setColumnWidth(1, 120)
         self.setColumnWidth(2, 165)
 
+        # Add initial rows. since a basic modulation maight have 6 rows
         self.add_row()
         self.add_row()
+        self.add_row()
+        self.add_row()
+        self.add_row()
+        self.add_row()
+
     
     def add_row(self):
         """
@@ -97,6 +103,12 @@ class ModulationTableWidget(QTableWidget):
         
     
     def remove_selected_row(self):
+        """
+        Remove the selected row from the modulation table.
+
+        If the table has more than one row, this
+        method removes the selected row from the table.
+        """
         current_row = self.currentRow()
         if current_row >= 0 and self.rowCount() > 1:
             self.removeRow(current_row)
